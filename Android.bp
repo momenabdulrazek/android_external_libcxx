@@ -201,41 +201,6 @@ cc_library_static {
     ],
 }
 
-cc_library {
-    name: "libc++fs",
-    ramdisk_available: true,
-    recovery_available: true,
-    vendor_available: true,
-    shared_libs: [ "libc++" ],
-    apex_available: [
-        "//apex_available:platform",
-        "com.android.art",
-        "com.android.art.debug",
-        "com.android.btservices",
-    ],
-    // being part of updatable apexes, this should work on older releases
-    min_sdk_version: "apex_inherit",
-    defaults: ["libc++ defaults"],
-    srcs: [
-        "src/filesystem/directory_iterator.cpp",
-        "src/filesystem/operations.cpp",
-    ],
-    multilib: {
-        lib32: {
-            // off_t usage is constrained to within the libc++ source (not the
-            // headers), so we can build the filesystem library with a 64-bit
-            // off_t on LP32 to get large file support without needing all users
-            // of the library to match.
-            cflags: ["-D_FILE_OFFSET_BITS=64"],
-        },
-    },
-    target: {
-        windows: {
-            enabled: false,
-        },
-    },
-}
-
 // This target is used to extract the build commands for a test executable.
 // See run_tests.py.
 cc_binary {
